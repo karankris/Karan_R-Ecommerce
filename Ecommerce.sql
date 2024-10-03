@@ -16,7 +16,7 @@ INSERT INTO customers (customer_id, name, email, password) VALUES
 (4, 'Vikram', 'vikram@gmail.com', 'vikram@789'),
 (5, 'David', 'david@gmail.com', 'david@123');
 
-select * from customers;
+
 
 CREATE TABLE products (
     product_id INT PRIMARY KEY,
@@ -34,7 +34,7 @@ INSERT INTO products (product_id, name, price, description, stockQuantity) VALUE
 (4, 'Smartwatch', 2500.00, 'Fitness tracking smartwatch', 30),
 (5, 'Tablet', 60000.00, '10-inch display tablet', 15);
 
-select * from products;
+
 
 CREATE TABLE cart (
     cart_id INT PRIMARY KEY,
@@ -53,7 +53,7 @@ INSERT INTO cart (cart_id, customer_id, product_id, quantity) VALUES
 (4, 4, 4, 1),
 (5, 5, 5, 2);
 
-select * from cart;
+
 
 CREATE TABLE orders (
     order_id INT PRIMARY KEY,
@@ -72,7 +72,7 @@ INSERT INTO orders (order_id, customer_id, order_date, total_price, shipping_add
 (4, 4, '2024-09-04', 2500.00, '101 Maple St, Chennai'),
 (5, 5, '2024-09-05', 12000.00, '202 Cedar St, Delhi');
 
-select * from orders;
+
 
 CREATE TABLE order_items (
     order_item_id INT PRIMARY KEY,
@@ -91,21 +91,49 @@ INSERT INTO order_items (order_item_id, order_id, product_id, quantity) VALUES
 (4, 4, 4, 1),
 (5, 5, 5, 2);
 
-select * from order_items;
+
+-- Report Query
+
+--1. Find the total quantity of products in a customer's cart (e.g., customer_id = 1)
 
 SELECT SUM(quantity) AS total_quantity
 FROM cart
 WHERE customer_id = 1;
 
+--2. Find the total number of products sold (from order_items)
+
 SELECT SUM(quantity) AS total_products_sold
 FROM order_items;
+
+--3. Find the average number of products per order
 
 SELECT AVG(quantity) AS average_products_per_order
 FROM order_items;
 
+--4. Retrieve all items in the cart for a specific customer (e.g., customer_id = 2)
+
 SELECT * FROM cart
 WHERE customer_id = 2;
 
+--5. Retrieve all products that are out of stock
+
 SELECT product_id, name, price
 FROM products
-WHERE stockQuantity = 10;
+WHERE stockQuantity = 0;
+
+--6.Find the customer who placed the most expensive order
+
+SELECT top 1 c.customer_id, c.name, o.total_price
+FROM customers c
+JOIN orders o ON c.customer_id = o.customer_id
+ORDER BY o.total_price DESC;
+
+
+
+--7 Display all the tables
+
+select * from customers;
+select * from products;
+select * from cart;
+select * from orders;
+select * from order_items;
